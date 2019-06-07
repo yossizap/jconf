@@ -1,0 +1,6 @@
+[submodule "third_party/json"]
+	path = third_party/json
+	url = git@github.com:avrahamshukron/json.git
+[submodule "third_party/json-schema-validator"]
+	path = third_party/json-schema-validator
+	url = git@github.com:avrahamshukron/json-schema-validator.git

@@ -1,0 +1,12 @@
+{
+  "enable": false,
+  "queues": {
+    "rx": 1000,
+    "tx": 1234
+  },
+  "id": 0,
+  "pid_path": "",
+  "logging": {
+    "level": "debug"
+  }
+}
