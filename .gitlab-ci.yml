@@ -1,0 +1,9 @@
+image: shukron/embedded:0.1.0
+
+build:
+  stage: build
+  script:
+    - mkdir -p .cmake-build
+    - cmake -S . -B .cmake-build
+    - cmake --build .cmake-build --target JConfTest
+    - cd .cmake-build/test && ./JConfTest
