@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.11)
 project(JConf VERSION 0.1.0 LANGUAGES CXX)
 
 option(JCONF_USE_EXTERNAL_JSON "Use an external JSON library" OFF)

@@ -1,5 +1,8 @@
 image: shukron/embedded:0.1.0
 
+variables:
+  GIT_SUBMODULE_STRATEGY: recursive
+
 build:
   stage: build
   script:

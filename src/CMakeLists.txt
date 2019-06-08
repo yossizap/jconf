@@ -1,11 +1,11 @@
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.11)
 project(JConf VERSION 0.1.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 11)
 
 set(JCONF_PUBLIC_HEADERS include/jconf/jconf.hpp)
 
-add_library(JConf SHARED
+add_library(JConf
     jconf.cpp
     ${JCONF_PUBLIC_HEADERS})
 add_library(JConf::JConf ALIAS JConf)
