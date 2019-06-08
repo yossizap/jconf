@@ -10,3 +10,6 @@ build:
     - cmake -S . -B .cmake-build
     - cmake --build .cmake-build --target JConfTest
     - cd .cmake-build/test && ./JConfTest
+
+include:
+  template: SAST.gitlab-ci.yml
