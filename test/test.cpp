@@ -12,22 +12,28 @@ int main(int argc, char **argv) {
   cout << "Configuration:" << endl;
   cout << setw(4) << c << endl;
 
-  cout << "Enabled? " << c.at("enable") << endl;
-  if (!c.at("enable")) {
+  cout << "Enabled? " << c.get_property("enable") << endl;
+  if (!c.get_property("enable")) {
     cout << "Apparently not. Enabling now..." << endl;
-    c.at("enable") = true;
+    c.set_property(R"(
+                     {"enable": true}
+                   )"_json);
   }
 
-  cout << "Logging level is currently " << c.at("/logging/level") << endl;
-  cout << "Setting logging.level to 'notice'..." << endl;
-
-  c.at("/logging/level") = "notice";
+  cout << "Logging level is currently " << c.get_property("/logging/level") << endl;
+  cout << "Setting logging.level to 'notice' using JSON objects..." << endl;
   try {
-    c.validate();
+    c.set_property(R"({
+                     "logging" :
+                     {"level":  "notice"}
+                   })"_json);
   } catch (const std::exception &e) {
     cout << e.what();
-    cout << "Oops. 'notice is invalid. Setting to 'warning'" << endl;
-    c.at("/logging/level") = "warning";
+    cout << "Oops. 'notice is invalid. Setting to 'info'" << endl;
+    c.set_property({{"logging", 
+                     {{"level", "info"}}
+                   }});
+    cout << "The new logging level is: " << c.get_property("/logging/level") << endl;
   }
 
   return 0;
