@@ -32,12 +32,12 @@ std::ostream &operator<<(std::ostream &os, const Config &c) {
   return os << c.m_data;
 }
 
-void Config::set_property(const json &property) {
+void Config::set(const json &property) {
   m_validator.validate(property); 
   m_data.merge_patch(property);
 }
 
-json Config::get_property(const std::string &key) {
+json Config::get(const std::string &key) {
   if (key.rfind('/', 0) == 0) {
     // If the key starts with "/", then it is a path, like "logging/level"
     json_pointer jp(key);

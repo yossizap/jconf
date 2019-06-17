@@ -13,30 +13,31 @@ jconf::Config config("config.json", "schema.json");
 config.load();
 
 // Retrieve a key
-std::cout << config.get_property("some_key");
+std::cout << config.get("some_key");
 // Even works with nested properties(converted to a JSON pointer)
-std::cout << config.get_property("/parent/child");
+std::cout << config.get("/parent/child");
 
 // Set an integer using nlohmann's json object
-config.set_property({{"some_integer", 1337}});
-
-config.set_property({{"some_integer", "string"}}); // Will raise an exception
+config.set({{"some_integer", 1337}});
+config.set({{"some_integer", "string"}}); // Will raise an exception
 
 // Set nested properties
 // NOTE: Refer to the documentation of the `JSON framework` in `See also`
 // for syntax documentation
-config.set_property(R"({
-                      "multiple_values": {
-                        "some_integer": 100,
-                        "some_boolean": true
-                      }
-                    })"_json)
+config.set(R"({
+                "multiple_values": {
+                  "some_integer": 100,
+                  "some_boolean": true
+                }
+              })"_json)
 ```
 
 ## See also
 JSON framework:
 https://github.com/nlohmann/json
+
 Validation framework:
 https://github.com/pboettch/json-schema-validator/
+
 JSON Schema reference:
 https://json-schema.org/understanding-json-schema/index.html

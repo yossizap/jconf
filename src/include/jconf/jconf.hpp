@@ -18,8 +18,8 @@ public:
   Config(std::string storage_path, std::string schema_path);
   void load();
   void save();
-  void set_property(const json &property);
-  json get_property(const std::string& key);
+  void set(const json &property);
+  json get(const std::string& key);
   friend std::ostream &operator<<(std::ostream &os, const Config &c);
 
 private:
