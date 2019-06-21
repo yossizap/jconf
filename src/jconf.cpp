@@ -1,13 +1,11 @@
 #include <fstream>
 #include <iomanip>
-#include <json-schema.hpp>
 #include <utility>
 
 #include "jconf/jconf.hpp"
 
 namespace jconf {
 
-using json_validator = nlohmann::json_schema::json_validator;
 using json_pointer = nlohmann::json_pointer<json>;
 
 Config::Config(std::string storage_path, std::string schema_path)
@@ -21,7 +19,8 @@ void Config::load() {
   std::ifstream j(m_schema_path);
   j >> m_schema;
 
-  validate();
+  m_validator.set_root_schema(m_schema);
+  m_validator.validate(m_data);
 }
 
 void Config::save() {
@@ -33,13 +32,12 @@ std::ostream &operator<<(std::ostream &os, const Config &c) {
   return os << c.m_data;
 }
 
-void Config::validate() {
-  json_validator validator;
-  validator.set_root_schema(m_schema);
-  validator.validate(m_data);
+void Config::set(const json &property) {
+  m_validator.validate(property); 
+  m_data.merge_patch(property);
 }
 
-json &Config::at(const std::string &key) {
+json Config::get(const std::string &key) {
   if (key.rfind('/', 0) == 0) {
     // If the key starts with "/", then it is a path, like "logging/level"
     json_pointer jp(key);

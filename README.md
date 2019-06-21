@@ -12,12 +12,32 @@ difference is that JConf has JSON Schema support for data validation.
 jconf::Config config("config.json", "schema.json");
 config.load();
 
-std::cout << config.at("some_key");         // Retrieve a key
-std::cout << config.at("/parent/child");    // Even works with JSON pointer
+// Retrieve a key
+std::cout << config.get("some_key");
+// Even works with nested properties(converted to a JSON pointer)
+std::cout << config.get("/parent/child");
 
-config.at("some_integer") = 1337;           // An integer
-config.validate();
+// Set an integer using nlohmann's json object
+config.set({{"some_integer", 1337}});
+config.set({{"some_integer", "string"}}); // Will raise an exception
 
-config.at("some_integer") = "hello world";  // A string??
-config.validate();                          // Will raise an exception
+// Set nested properties
+// NOTE: Refer to the documentation of the `JSON framework` in `See also`
+// for syntax documentation
+config.set(R"({
+                "multiple_values": {
+                  "some_integer": 100,
+                  "some_boolean": true
+                }
+              })"_json)
 ```
+
+## See also
+JSON framework:
+https://github.com/nlohmann/json
+
+Validation framework:
+https://github.com/pboettch/json-schema-validator/
+
+JSON Schema reference:
+https://json-schema.org/understanding-json-schema/index.html
