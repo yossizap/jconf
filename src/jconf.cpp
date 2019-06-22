@@ -12,12 +12,19 @@ Config::Config(std::string storage_path, std::string schema_path)
     : m_storage_path(std::move(storage_path)),
       m_schema_path(std::move(schema_path)) {}
 
-void Config::load() {
-  std::ifstream i(m_storage_path);
-  i >> m_data;
+void Config::load(std::string ext_schema_path) {
+  std::ifstream (m_storage_path) >> m_data;
+  std::ifstream (m_schema_path) >> m_schema;
 
-  std::ifstream j(m_schema_path);
-  j >> m_schema;
+  // Validate data using an external schema if provided
+  if(!ext_schema_path.empty()) 
+  {
+    json ext_schema;
+    json_validator ext_validator;
+    std::ifstream(ext_schema_path) >> ext_schema;
+    ext_validator.set_root_schema(ext_schema);
+    ext_validator.validate(m_data);
+  }
 
   m_validator.set_root_schema(m_schema);
   m_validator.validate(m_data);
@@ -47,3 +54,4 @@ json Config::get(const std::string &key) {
   }
 }
 } // namespace jconf
+

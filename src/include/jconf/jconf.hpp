@@ -17,7 +17,7 @@ class Config {
 
 public:
   Config(std::string storage_path, std::string schema_path);
-  void load();
+  void load(std::string ext_schema_path="");
   void save();
   void set(const json &property);
   json get(const std::string &key);

@@ -9,10 +9,6 @@
     },
     "queues": {
       "type": "object",
-      "required": [
-        "rx",
-        "tx"
-      ],
       "properties": {
         "rx": {
           "type": "integer",
@@ -37,9 +33,6 @@
     },
     "logging": {
       "type": "object",
-      "required": [
-        "level"
-      ],
       "properties": {
         "level": {
           "type": "string",
