@@ -8,7 +8,7 @@ using namespace std;
 int main(int argc, char **argv) {
   jconf::Config c("./config.json", "./schema.json");
   cout << "Loading configuration and schema..." << endl;
-  c.load("./req_schema.json");
+  c.load();
   cout << "Configuration:" << endl;
   cout << setw(4) << c << endl;
 

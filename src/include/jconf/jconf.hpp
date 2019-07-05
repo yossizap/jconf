@@ -17,7 +17,7 @@ class Config {
 
 public:
   Config(std::string storage_path, std::string schema_path);
-  void load(std::string ext_schema_path="");
+  void load();
   void save();
   void set(const json &property);
   json get(const std::string &key);
@@ -44,6 +44,8 @@ private:
   json m_data;
   json m_schema;
   json_validator m_validator;
+
+  void erase(json &j, const std::string &key);
 };
 } // namespace jconf
 

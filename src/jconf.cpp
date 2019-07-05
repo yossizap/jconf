@@ -1,33 +1,32 @@
 #include <fstream>
 #include <iomanip>
 #include <utility>
+#include <iostream>
 
 #include "jconf/jconf.hpp"
 
 namespace jconf {
 
 using json_pointer = nlohmann::json_pointer<json>;
+using invalid_iterator = nlohmann::json::invalid_iterator;
 
 Config::Config(std::string storage_path, std::string schema_path)
     : m_storage_path(std::move(storage_path)),
       m_schema_path(std::move(schema_path)) {}
 
-void Config::load(std::string ext_schema_path) {
+void Config::load() {
   std::ifstream (m_storage_path) >> m_data;
   std::ifstream (m_schema_path) >> m_schema;
 
-  // Validate data using an external schema if provided
-  if(!ext_schema_path.empty()) 
-  {
-    json ext_schema;
-    json_validator ext_validator;
-    std::ifstream(ext_schema_path) >> ext_schema;
-    ext_validator.set_root_schema(ext_schema);
-    ext_validator.validate(m_data);
-  }
+  // Fully validate the schema with a temporary validator object
+  json_validator init_validator;
+  init_validator.set_root_schema(m_schema);
+  init_validator.validate(m_data);
+
+  // Remove the 'required' field to avoid insertion runtime issues
+  erase(m_schema, "required");
 
   m_validator.set_root_schema(m_schema);
-  m_validator.validate(m_data);
 }
 
 void Config::save() {
@@ -53,5 +52,25 @@ json Config::get(const std::string &key) {
     return m_data.at(key);
   }
 }
-} // namespace jconf
 
+void Config::erase(json &j, const std::string &key)
+{
+  for (auto it = j.begin(); it != j.end(); ++it)
+  {
+    // Keep recursing if the iterator is an array/object
+    if(it->is_structured())
+    {
+      erase(*it, key);
+    }
+
+    try {
+      if(0 == it.key().compare(key))
+      {
+        j.erase(it);
+      }
+    // Ignore invalid iterators
+    } catch (const invalid_iterator &e) {}
+  }
+}
+
+} // namespace jconf
