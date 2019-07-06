@@ -36,5 +36,10 @@ int main(int argc, char **argv) {
     cout << "The new logging level is: " << c.get("/logging/level") << endl;
   }
 
+  cout << "Setting queues.rx to '5000'..." << endl;
+  c.set("/queues/rx", 5000);
+  cout << "RX is now set to " << c.get("/queues/rx") << 
+      " TX is still " << c.get("/queues/tx") << endl;
+
   return 0;
 }

@@ -1,26 +1,32 @@
 #include <fstream>
 #include <iomanip>
 #include <utility>
+#include <iostream>
 
 #include "jconf/jconf.hpp"
 
 namespace jconf {
 
 using json_pointer = nlohmann::json_pointer<json>;
+using invalid_iterator = nlohmann::json::invalid_iterator;
 
 Config::Config(std::string storage_path, std::string schema_path)
     : m_storage_path(std::move(storage_path)),
       m_schema_path(std::move(schema_path)) {}
 
 void Config::load() {
-  std::ifstream i(m_storage_path);
-  i >> m_data;
+  std::ifstream (m_storage_path) >> m_data;
+  std::ifstream (m_schema_path) >> m_schema;
 
-  std::ifstream j(m_schema_path);
-  j >> m_schema;
+  // Fully validate the schema with a temporary validator object
+  json_validator init_validator;
+  init_validator.set_root_schema(m_schema);
+  init_validator.validate(m_data);
+
+  // Remove the 'required' field to avoid insertion runtime issues
+  remove(m_schema, "required");
 
   m_validator.set_root_schema(m_schema);
-  m_validator.validate(m_data);
 }
 
 void Config::save() {
@@ -46,4 +52,26 @@ json Config::get(const std::string &key) {
     return m_data.at(key);
   }
 }
+
+void Config::remove(json &j, const std::string &key)
+{
+  for (auto it = j.begin(); it != j.end(); ++it)
+  {
+    // Keep recursing if the iterator is an array/object to remove nested keys
+    if(it->is_structured())
+    {
+      remove(*it, key);
+    }
+
+    try {
+      if(0 == it.key().compare(key))
+      {
+        j.erase(it);
+      }
+    // Only json objects have keys, items without values or items with 
+    // multiple values will throw an exception so we ignore them
+    } catch (const invalid_iterator &e) {}
+  }
+}
+
 } // namespace jconf
