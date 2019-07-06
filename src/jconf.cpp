@@ -24,7 +24,7 @@ void Config::load() {
   init_validator.validate(m_data);
 
   // Remove the 'required' field to avoid insertion runtime issues
-  erase(m_schema, "required");
+  remove(m_schema, "required");
 
   m_validator.set_root_schema(m_schema);
 }
@@ -53,14 +53,14 @@ json Config::get(const std::string &key) {
   }
 }
 
-void Config::erase(json &j, const std::string &key)
+void Config::remove(json &j, const std::string &key)
 {
   for (auto it = j.begin(); it != j.end(); ++it)
   {
-    // Keep recursing if the iterator is an array/object
+    // Keep recursing if the iterator is an array/object to remove nested keys
     if(it->is_structured())
     {
-      erase(*it, key);
+      remove(*it, key);
     }
 
     try {
@@ -68,7 +68,8 @@ void Config::erase(json &j, const std::string &key)
       {
         j.erase(it);
       }
-    // Ignore invalid iterators
+    // Only json objects have keys, items without values or items with 
+    // multiple values will throw an exception so we ignore them
     } catch (const invalid_iterator &e) {}
   }
 }

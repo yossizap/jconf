@@ -45,7 +45,7 @@ private:
   json m_schema;
   json_validator m_validator;
 
-  void erase(json &j, const std::string &key);
+  void remove(json &j, const std::string &key);
 };
 } // namespace jconf
 
