@@ -2,6 +2,13 @@
   "definitions": {},
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
+  "required": [
+    "enable",
+    "queues",
+    "id",
+    "pid_path",
+    "logging"
+  ],
   "properties": {
     "enable": {
       "type": "boolean",
@@ -9,10 +16,6 @@
     },
     "queues": {
       "type": "object",
-      "required": [
-        "rx",
-        "tx"
-      ],
       "properties": {
         "rx": {
           "type": "integer",
@@ -26,7 +29,11 @@
           "minimum": 10,
           "maximum": 10000
         }
-      }
+      },
+      "required": [
+        "rx",
+        "tx"
+      ]
     },
     "id": {
       "type": "integer",
@@ -37,9 +44,6 @@
     },
     "logging": {
       "type": "object",
-      "required": [
-        "level"
-      ],
       "properties": {
         "level": {
           "type": "string",
@@ -52,7 +56,10 @@
           ],
           "default": "info"
         }
-      }
+      },
+      "required": [
+        "level"
+      ]
     }
   }
 }
