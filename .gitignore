@@ -29,6 +29,9 @@ _deps
 *.o
 *.obj
 
+# Temporary files
+*~
+
 # Precompiled Headers
 *.gch
 *.pch
