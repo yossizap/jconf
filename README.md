@@ -12,10 +12,6 @@ difference is that JConf has JSON Schema support for data validation.
 jconf::Config config("config.json", "schema.json");
 config.load();
 
-// Load an external schema for initialization validation
-// Primarily useful for the validation of 'required' fields
-config.load(./ext_schema.json);
-
 // Retrieve a key
 std::cout << config.get("some_key");
 // Even works with nested properties(converted to a JSON pointer)
