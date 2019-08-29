@@ -4,8 +4,8 @@
 #include <ostream>
 #include <string>
 
-#include "nlohmann/json.hpp"
 #include <json-schema.hpp>
+#include "nlohmann/json.hpp"
 
 namespace jconf {
 
@@ -14,39 +14,39 @@ using json = nlohmann::json;
 using json_pointer = nlohmann::json_pointer<json>;
 
 class Config {
+   public:
+    Config(std::string storage_path, std::string schema_path);
+    void load();
+    void save();
+    void set(const json& property);
+    json get(const std::string& key);
 
-public:
-  Config(std::string storage_path, std::string schema_path);
-  void load();
-  void save();
-  void set(const json &property);
-  json get(const std::string &key);
+    template <typename T>
+    void set(const std::string& key, const T& value) {
+        json j;
 
-  template <typename T>
-  void set(const std::string &key, const T &value) {
-    json j;
+        if (key.rfind('/', 0) == 0) {
+            // If the key starts with "/", then it is a path, like
+            // "logging/level"
+            j[json_pointer(key)] = value;
+        } else {
+            j[key] = value;
+        }
 
-    if (key.rfind('/', 0) == 0) {
-      // If the key starts with "/", then it is a path, like "logging/level"
-      j[json_pointer(key)] = value;
-    } else {
-      j[key] = value;
+        set(j);
     }
 
-    set(j);
-  }
+    friend std::ostream& operator<<(std::ostream& os, const Config& c);
 
-  friend std::ostream &operator<<(std::ostream &os, const Config &c);
+   private:
+    std::string m_storage_path;
+    std::string m_schema_path;
+    json m_data;
+    json m_schema;
+    json_validator m_validator;
 
-private:
-  std::string m_storage_path;
-  std::string m_schema_path;
-  json m_data;
-  json m_schema;
-  json_validator m_validator;
-
-  void remove(json &j, const std::string &key);
+    void remove(json& j, const std::string& key);
 };
-} // namespace jconf
+}  // namespace jconf
 
-#endif // JCONF_H
+#endif  // JCONF_H
