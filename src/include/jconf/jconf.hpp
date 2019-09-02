@@ -19,7 +19,7 @@ class Config {
     void load();
     void save();
     void set(const json& property);
-    void set(const std::string &key, const json &property);
+    void set(const std::string& key, const json& property);
     json get(const std::string& key);
 
     template <typename T>

@@ -43,18 +43,20 @@ void Config::set(const json& property) {
     m_data.merge_patch(property);
 }
 
-void Config::set(const std::string &key, const json &property) {
-  if (key.rfind('/', 0) == 0) {
-    // If the key starts with "/", then it is a path, like "logging/level"
-    json_pointer jp(key);
-    m_data.at(jp) = property;
-  } else {
-    m_data.at(key) = property;
-  }
+void Config::set(const std::string& key, const json& property) {
+    if (key.rfind('/', 0) == 0) {
+        // If the key starts with "/", then it is a path, like "logging/level"
+        json_pointer jp(key);
+        m_data.at(jp) = property;
+    } else {
+        m_data.at(key) = property;
+    }
 }
 
 json Config::get(const std::string& key) {
-    if (key.rfind('/', 0) == 0) {
+    if (key.compare("/") == 0) {
+        return m_data;
+    } else if (key.rfind('/', 0) == 0) {
         // If the key starts with "/", then it is a path, like "logging/level"
         json_pointer jp(key);
         return m_data.at(jp);
