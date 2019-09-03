@@ -3,6 +3,7 @@
 
 #include <ostream>
 #include <string>
+#include <mutex>
 
 #include <json-schema.hpp>
 #include "nlohmann/json.hpp"
@@ -28,6 +29,8 @@ class Config
     {
         json j;
 
+        m_mutex.lock();
+
         if (key.rfind('/', 0) == 0)
         {
             // If the key starts with "/", then it is a path, like
@@ -39,6 +42,8 @@ class Config
             j[key] = value;
         }
 
+        m_mutex.unlock();
+
         set(j);
     }
 
@@ -47,6 +52,7 @@ class Config
    private:
     std::string m_storage_path;
     std::string m_schema_path;
+    std::mutex m_mutex;
     json m_data;
     json m_schema;
     json_validator m_validator;

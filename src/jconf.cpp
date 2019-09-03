@@ -18,6 +18,8 @@ Config::Config(std::string storage_path, std::string schema_path)
 
 void Config::load()
 {
+    m_mutex.lock();
+    
     std::ifstream(m_storage_path) >> m_data;
     std::ifstream(m_schema_path) >> m_schema;
 
@@ -30,12 +32,19 @@ void Config::load()
     remove(m_schema, "required");
 
     m_validator.set_root_schema(m_schema);
+
+    m_mutex.unlock();
 }
 
 void Config::save()
 {
     std::ofstream o(m_storage_path);
+
+    m_mutex.lock();
+
     o << std::setw(4) << m_data << std::endl;
+
+    m_mutex.unlock();
 }
 
 std::ostream &operator<<(std::ostream &os, const Config &c)
@@ -45,12 +54,18 @@ std::ostream &operator<<(std::ostream &os, const Config &c)
 
 void Config::set(const json &property)
 {
+    m_mutex.lock();
+
     m_validator.validate(property);
     m_data.merge_patch(property);
+
+    m_mutex.unlock();
 }
 
 void Config::set(const std::string &key, const json &property)
 {
+    m_mutex.lock();
+
     if (key.rfind('/', 0) == 0)
     {
         // If the key starts with "/", then it is a path, like "logging/level"
@@ -61,28 +76,40 @@ void Config::set(const std::string &key, const json &property)
     {
         m_data.at(key) = property;
     }
+
+    m_mutex.unlock();
 }
 
 json Config::get(const std::string &key)
 {
+    m_mutex.lock();
+
+    json ret;
+    
     if (key.compare("/") == 0)
     {
-        return m_data;
+        ret = m_data;
     }
     else if (key.rfind('/', 0) == 0)
     {
         // If the key starts with "/", then it is a path, like "logging/level"
         json_pointer jp(key);
-        return m_data.at(jp);
+        ret = m_data.at(jp);
     }
     else
     {
-        return m_data.at(key);
+        ret = m_data.at(key);
     }
+
+    m_mutex.unlock();
+
+    return ret;
 }
 
 void Config::remove(json &j, const std::string &key)
 {
+    m_mutex.lock();
+
     for (auto it = j.begin(); it != j.end(); ++it)
     {
         // Keep recursing if the iterator is an array/object to remove nested
@@ -98,13 +125,15 @@ void Config::remove(json &j, const std::string &key)
             {
                 j.erase(it);
             }
-            // Only json objects have keys, items without values or items with
-            // multiple values will throw an exception so we ignore them
         }
+        // Only json objects have keys, items without values or items with
+        // multiple values will throw an exception so we ignore them
         catch (const invalid_iterator &e)
         {
         }
     }
+
+    m_mutex.unlock();
 }
 
 }  // namespace jconf
