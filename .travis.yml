@@ -1,0 +1,24 @@
+compiler: gcc
+
+dist: xenial
+os: linux
+
+language:
+    - cpp
+
+sudo:
+    - required
+
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - g++-7
+      - cmake
+
+script:
+  - mkdir build && cd build
+  - cmake ..
+  - cmake --build .
+  - cd ..
