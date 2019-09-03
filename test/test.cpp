@@ -5,7 +5,8 @@
 
 using namespace std;
 
-int main(int argc, char** argv) {
+int main(int argc, char **argv)
+{
     jconf::Config c("./config.json", "./schema.json");
     cout << "Loading configuration and schema..." << endl;
     c.load();
@@ -13,7 +14,8 @@ int main(int argc, char** argv) {
     cout << setw(4) << c << endl;
 
     cout << "Enabled? " << c.get("enable") << endl;
-    if (!c.get("enable")) {
+    if (!c.get("enable"))
+    {
         cout << "Apparently not. Enabling now..." << endl;
         c.set(R"(
                {"enable": true}
@@ -22,12 +24,15 @@ int main(int argc, char** argv) {
 
     cout << "Logging level is currently " << c.get("/logging/level") << endl;
     cout << "Setting logging.level to 'notice' using JSON objects..." << endl;
-    try {
+    try
+    {
         c.set(R"({
                 "logging" :
                 {"level":  "notice"}
              })"_json);
-    } catch (const std::exception& e) {
+    }
+    catch (const std::exception &e)
+    {
         cout << e.what();
         cout << "Oops. 'notice is invalid. Setting to 'info'" << endl;
         c.set({{"logging", {{"level", "info"}}}});

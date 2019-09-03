@@ -4,6 +4,8 @@ project(JConf VERSION 0.1.0 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 11)
 
 set(JCONF_PUBLIC_HEADERS include/jconf/jconf.hpp)
+set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-O3 -Wall -Wextra -pedantic \
+    -Wlogical-op -Wuseless-cast -Wdouble-promotion -Wshadow -Wformat=2")
 
 add_library(JConf
     jconf.cpp
