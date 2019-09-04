@@ -1,5 +1,7 @@
 # JConf
 
+[![Build Status](https://api.travis-ci.org/yossizap/jconf.svg?branch=master)](https://api.travis-ci.org/yossizap/jconf)
+
 JConf library provides a way to manage Property Tree that has a schema to
 validate against. The property can be serialized and deserialized to JSON and
 some of its binary derivatives, such as BSON, CBOR, MessagePack, and UBJSON.
